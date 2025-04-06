@@ -14,14 +14,15 @@ function CodeBlock() {
   const [showSuccess, setShowSuccess] = useState(false);
   const socketRef = useRef(null);
 
-  // Add normalization function to make the solution check more flexible
   const normalizeCode = (code) => {
     return code.replace(/\s+/g, " ").trim();
   };
 
   useEffect(() => {
+    const API = import.meta.env.VITE_API_URL;
+
     // Connect to server
-    socketRef.current = io("http://localhost:5000");
+    socketRef.current = io(API);
 
     // Send room identification
     socketRef.current.emit("join-room", id);
@@ -56,7 +57,7 @@ function CodeBlock() {
     });
 
     // Fetch data from server
-    fetch(`http://localhost:5000/api/codeblocks/${id}`)
+    fetch(`${API}/api/codeblocks/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setBlock(data);
@@ -70,7 +71,6 @@ function CodeBlock() {
     };
   }, [id, navigate]);
 
-  // Function to handle code changes with improved solution check
   const handleCodeChange = (newCode) => {
     setCode(newCode);
     socketRef.current.emit("code-change", newCode);
@@ -78,11 +78,9 @@ function CodeBlock() {
     const normalizedCode = normalizeCode(newCode);
     const normalizedSolution = block ? normalizeCode(block.solution) : "";
 
-    // Check if code matches solution (with normalization)
     if (block && normalizedCode === normalizedSolution) {
       console.log("SUCCESS! Showing smiley");
       setShowSuccess(true);
-      // Emit solution solved event to all clients in the room
       socketRef.current.emit("solution-solved");
     }
   };
