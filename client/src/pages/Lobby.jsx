@@ -6,14 +6,12 @@ export default function Lobby() {
   const [blocks, setBlocks] = useState([]);
   const navigate = useNavigate();
 
-  const API = import.meta.env.VITE_API_URL;
-
   useEffect(() => {
-    fetch(`${API}/api/codeblocks`)
+    fetch("http://localhost:5000/api/codeblocks")
       .then((res) => res.json())
       .then((data) => setBlocks(data))
       .catch((err) => console.error("Failed to fetch code blocks:", err));
-  }, [API]);
+  }, []);
 
   return (
     <div className="lobby-container">

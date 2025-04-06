@@ -19,45 +19,33 @@ function CodeBlock() {
   };
 
   useEffect(() => {
-    const API = import.meta.env.VITE_API_URL;
+    // Connect to local server
+    socketRef.current = io("http://localhost:5000");
 
-    // Connect to server
-    socketRef.current = io(API);
-
-    // Send room identification
     socketRef.current.emit("join-room", id);
 
-    // Get role
     socketRef.current.on("role", (userRole) => {
-      console.log("My role is:", userRole);
       setRole(userRole);
     });
 
-    // Listen for code updates
     socketRef.current.on("code-update", (updatedCode) => {
       setCode(updatedCode);
     });
 
-    // Listen for solution solved
     socketRef.current.on("solution-solved", () => {
-      console.log("Solution solved event received");
       setShowSuccess(true);
     });
 
-    // Listen for student count
     socketRef.current.on("students-count", (count) => {
-      console.log("Students in room:", count);
       setStudents(count);
     });
 
-    // Listen for mentor leaving
     socketRef.current.on("mentor-left", () => {
       alert("The mentor has left the room");
-      navigate("/"); // Back to lobby
+      navigate("/");
     });
 
-    // Fetch data from server
-    fetch(`${API}/api/codeblocks/${id}`)
+    fetch(`http://localhost:5000/api/codeblocks/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setBlock(data);
@@ -65,7 +53,6 @@ function CodeBlock() {
       })
       .catch((err) => console.error("Failed to fetch block:", err));
 
-    // Clean up socket connection when leaving the page
     return () => {
       socketRef.current.disconnect();
     };
@@ -79,7 +66,6 @@ function CodeBlock() {
     const normalizedSolution = block ? normalizeCode(block.solution) : "";
 
     if (block && normalizedCode === normalizedSolution) {
-      console.log("SUCCESS! Showing smiley");
       setShowSuccess(true);
       socketRef.current.emit("solution-solved");
     }
