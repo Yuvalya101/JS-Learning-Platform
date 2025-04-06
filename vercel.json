@@ -1,9 +1,11 @@
 {
-    "projects": {
-      "js-learning-platform-puuv": {
-        "settings": {
-          "ogImage": "https://imgur.com/a/qvHXx7R"
+    "images": {
+      "domains": ["imgur.com"],
+      "remotePatterns": [
+        {
+          "protocol": "https",
+          "hostname": "imgur.com"
         }
-      }
+      ]
     }
   }
