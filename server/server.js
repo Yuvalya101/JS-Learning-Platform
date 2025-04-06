@@ -26,11 +26,6 @@ app.use(express.json());
 // API routes
 app.use("/api/codeblocks", codeBlockRoutes);
 
-// Serve frontend from client/dist (Vite build)
-app.use(express.static(path.join(__dirname, "..", "client", "dist")));
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "client", "dist", "index.html"));
-});
 
 // MongoDB connection
 mongoose
