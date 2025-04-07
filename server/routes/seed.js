@@ -4,10 +4,8 @@ const CodeBlock = require("../models/CodeBlockModel");
 
 router.get("/seed", async (req, res) => {
     try {
-    // מחיקת הקוד הקיים
     await CodeBlock.deleteMany({});
 
-    // יצירת קוד חדש
     const blocks = [
       {
         title: "Async Case",
@@ -32,10 +30,10 @@ router.get("/seed", async (req, res) => {
     ];
 
     await CodeBlock.insertMany(blocks);
-    res.status(200).send("✅ Code blocks inserted successfully");
+    res.status(200).send("Code blocks inserted successfully");
   } catch (err) {
     console.error("Seed failed:", err);
-    res.status(500).send("❌ Seed failed");
+    res.status(500).send("Seed failed");
   }
 });
 
