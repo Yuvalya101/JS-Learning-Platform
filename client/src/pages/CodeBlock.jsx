@@ -14,13 +14,15 @@ function CodeBlock() {
   const [showSuccess, setShowSuccess] = useState(false);
   const socketRef = useRef(null);
 
+  const backendUrl = import.meta.env.VITE_API_URL; // 💥 קישור דינמי לשרת
+
   const normalizeCode = (code) => {
     return code.replace(/\s+/g, " ").trim();
   };
 
   useEffect(() => {
-    // Connect to local server
-    socketRef.current = io("http://localhost:5000");
+    // התחברות לשרת דרך כתובת מה־env
+    socketRef.current = io(backendUrl);
 
     socketRef.current.emit("join-room", id);
 
@@ -45,7 +47,7 @@ function CodeBlock() {
       navigate("/");
     });
 
-    fetch(`http://localhost:5000/api/codeblocks/${id}`)
+    fetch(`${backendUrl}/api/codeblocks/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setBlock(data);
@@ -56,7 +58,7 @@ function CodeBlock() {
     return () => {
       socketRef.current.disconnect();
     };
-  }, [id, navigate]);
+  }, [id, navigate, backendUrl]);
 
   const handleCodeChange = (newCode) => {
     setCode(newCode);

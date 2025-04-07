@@ -77,6 +77,8 @@ io.on("connection", (socket) => {
     });
   });
 });
+const seedRoute = require("./routes/seed");
+app.use("/api", seedRoute);
 
 // Start the server
 const PORT = process.env.PORT || 5000;

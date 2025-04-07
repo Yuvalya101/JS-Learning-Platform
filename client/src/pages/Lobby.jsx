@@ -6,12 +6,22 @@ export default function Lobby() {
   const [blocks, setBlocks] = useState([]);
   const navigate = useNavigate();
 
+  const backendUrl = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
-    fetch("http://localhost:5000/api/codeblocks")
-      .then((res) => res.json())
-      .then((data) => setBlocks(data))
+    console.log("VITE_API_URL:", backendUrl); // ✅ בדיקת כתובת
+
+    fetch(`${backendUrl}/api/codeblocks`)
+      .then((res) => {
+        console.log("Response status:", res.status); // ✅ בדיקת סטטוס
+        return res.json();
+      })
+      .then((data) => {
+        console.log("Fetched data:", data); // ✅ בדיקת מה הגיע מהשרת
+        setBlocks(data);
+      })
       .catch((err) => console.error("Failed to fetch code blocks:", err));
-  }, []);
+  }, [backendUrl]);
 
   return (
     <div className="lobby-container">
@@ -19,7 +29,7 @@ export default function Lobby() {
       <ul className="code-blocks-list">
         {blocks.map((block) => (
           <li key={block._id} className="code-block-item">
-            <button 
+            <button
               className="code-block-button"
               onClick={() => navigate(`/codeblock/${block._id}`)}
             >
